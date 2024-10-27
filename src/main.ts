@@ -1,12 +1,10 @@
-
 let puntuacion: number = 0;
-let juegoTerminado: boolean = false;
 const valoresCartas: number[] = [1, 2, 3, 4, 5, 6, 7, 10, 11, 12];
 
 // Puntuación actual
 function muestraPuntuacion(): void {
     const puntuacionDiv = document.getElementById("puntuacionDiv");
-    if (puntuacionDiv) {
+    if (puntuacionDiv !== null && puntuacionDiv !== undefined && puntuacionDiv instanceof HTMLDivElement) {
         puntuacionDiv.innerHTML = "Puntuación: " + puntuacion;
     }
 }
@@ -17,8 +15,75 @@ function dameCarta(): number {
     return valoresCartas[indiceCarta];
 }
 
-// Mostrar carta
-function muestraCarta(carta: number): void {
+// Mostrar la carta seleccionada en el HTML
+function pintarCartaEnHTML(urlCarta: string): void {
+    const cartaImg = document.getElementById("cartaImg");
+    if (cartaImg !== null && cartaImg !== undefined && cartaImg instanceof HTMLImageElement) {
+        cartaImg.src = urlCarta;
+    }
+}
+
+// Devuelve los puntos de la carta (mayores a 7 valen 0.5)
+function obtenerPuntosCarta(carta: number): number {
+    return carta > 7 ? 0.5 : carta;
+}
+
+// Suma los puntos de la carta a la puntuación total
+function sumarPuntos(puntos: number): void {
+    puntuacion += puntos;
+}
+
+// Actualiza los puntos totales en la interfaz
+function actualizarPuntuacionTotal(): void {
+    muestraPuntuacion();
+}
+
+// Verifica si los puntos totales son iguales a 7.5 o si son mayores
+function verificarPuntuacion(): void {
+    if (puntuacion === 7.5) {
+        mostrarMensajeEnHTML("¡Lo has clavado! ¡Enhorabuena! Has llegado a 7.5.");
+        terminarJuego();
+    } else if (puntuacion > 7.5) {
+        mostrarMensajeEnHTML("¡Game Over! Has superado los 7.5 puntos.");
+        terminarJuego();
+    }
+}
+
+// Devuelve el mensaje basado en la puntuación al plantarse
+function obtenerMensajePlantarse(puntos: number): string {
+    if (puntos < 4) {
+        return "Has sido muy conservador.";
+    } else if (puntos === 5) {
+        return "Te ha entrado el canguelo eh?";
+    } else if (puntos === 6 || puntos === 7) {
+        return "Casi casi...";
+    } else if (puntos === 7.5) {
+        return "¡Lo has clavado! ¡Enhorabuena!";
+    }
+    return "";
+}
+
+// Muestra el mensaje en el HTML
+function mostrarMensajeEnHTML(mensaje: string): void {
+    const mensajeDiv = document.getElementById("mensajeDiv");
+    if (mensajeDiv !== null && mensajeDiv !== undefined && mensajeDiv instanceof HTMLDivElement) {
+        mensajeDiv.innerHTML = mensaje;
+    }
+}
+
+// Final del juego
+function terminarJuego(): void {
+    const nuevaPartidaBtn = document.getElementById("nuevaPartidaBtn");
+    if (nuevaPartidaBtn !== null && nuevaPartidaBtn !== undefined && nuevaPartidaBtn instanceof HTMLButtonElement) {
+        nuevaPartidaBtn.style.display = "inline";  // Mostrar botón de nueva partida
+    }
+}
+
+// Botón "Pedir Carta"
+function pedirCarta(): void {
+    const nuevaCarta: number = dameCarta();
+    console.log("Carta recibida: ", nuevaCarta);
+    
     const imagenesCartas: { [key: number]: string } = {
         1: "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/1_as-copas.jpg",
         2: "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/2_dos-copas.jpg",
@@ -31,78 +96,40 @@ function muestraCarta(carta: number): void {
         11: "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/11_caballo-copas.jpg",
         12: "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/12_rey-copas.jpg",
     };
-    const cartaImg = document.getElementById("cartaImg") as HTMLImageElement;
-    if (cartaImg) {
-        cartaImg.src = imagenesCartas[carta];
-    }
-}
 
-// Botón "Pedir Carta"
-function pedirCarta(): void {
-    if (juegoTerminado) {
-        alert("El juego ha terminado. Inicia una nueva partida.");
-        return;
-    }
-    
-    const nuevaCarta: number = dameCarta();
-    console.log("Carta recibida: ", nuevaCarta);
-    muestraCarta(nuevaCarta);
-    puntuacion += (nuevaCarta > 7 ? 0.5 : nuevaCarta);  // Suma la carta nueva
-    muestraPuntuacion();
-    verificaGameOver();
-}
+    pintarCartaEnHTML(imagenesCartas[nuevaCarta]);  // Mostrar la imagen de la carta
 
-// Game Over
-function verificaGameOver(): void {
-    if (puntuacion > 7.5) {
-        alert("¡Game Over! Has superado los 7.5 puntos.");
-        terminarJuego();
-    }
+    const puntosCarta: number = obtenerPuntosCarta(nuevaCarta);
+    sumarPuntos(puntosCarta);  // Sumar los puntos
+    actualizarPuntuacionTotal();  // Actualizar la puntuación en la interfaz
+    verificarPuntuacion();  // Verificar si los puntos son 7.5 o más
 }
 
 // Plantarse
 function plantarse(): void {
-    if (juegoTerminado) {
-        alert("El juego ya ha terminado. Inicia una nueva partida.");
-        return;
-    }
-
-    juegoTerminado = true;
-
-    if (puntuacion < 4) {
-        alert("Has sido muy conservador.");
-    } else if (puntuacion === 5) {
-        alert("Te ha entrado el canguelo eh?");
-    } else if (puntuacion === 6 || puntuacion === 7) {
-        alert("Casi casi...");
-    } else if (puntuacion === 7.5) {
-        alert("¡Lo has clavado! ¡Enhorabuena!");
-    }
-
+    const mensaje = obtenerMensajePlantarse(puntuacion);
+    mostrarMensajeEnHTML(mensaje);
     terminarJuego();
-}
-
-// Final del juego
-function terminarJuego(): void {
-    juegoTerminado = true;
-    const nuevaPartidaBtn = document.getElementById("nuevaPartidaBtn");
-    if (nuevaPartidaBtn) {
-        nuevaPartidaBtn.style.display = "inline";  // Botón nueva partida
-    }
 }
 
 // Reiniciar partida
 function nuevaPartida(): void {
     puntuacion = 0;
-    juegoTerminado = false;
     muestraPuntuacion();
-    const cartaImg = document.getElementById("cartaImg") as HTMLImageElement;
-    if (cartaImg) {
+    
+    const cartaImg = document.getElementById("cartaImg");
+    if (cartaImg !== null && cartaImg !== undefined && cartaImg instanceof HTMLImageElement) {
         cartaImg.src = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/back.jpg";
     }
+
     const nuevaPartidaBtn = document.getElementById("nuevaPartidaBtn");
-    if (nuevaPartidaBtn) {
+    if (nuevaPartidaBtn !== null && nuevaPartidaBtn !== undefined && nuevaPartidaBtn instanceof HTMLButtonElement) {
         nuevaPartidaBtn.style.display = "none";  // Ocultar botón nueva partida
+    }
+
+    const mensajeDiv = document.getElementById("mensajeDiv");
+    if (mensajeDiv !== null && mensajeDiv !== undefined && mensajeDiv instanceof HTMLDivElement) {
+        mensajeDiv.innerHTML = "";  // Limpiar mensaje anterior
     }
 }
 
@@ -110,4 +137,3 @@ function nuevaPartida(): void {
 document.getElementById("pedirCartaBtn")?.addEventListener("click", pedirCarta);
 document.getElementById("plantarseBtn")?.addEventListener("click", plantarse);
 document.getElementById("nuevaPartidaBtn")?.addEventListener("click", nuevaPartida);
-document.addEventListener("mostrarpuntuacion", muestraPuntuacion);
