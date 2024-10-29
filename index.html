@@ -8,28 +8,26 @@
     <title>Juego 7.5</title>
   </head>
   <body>
-    <h1>Juego de 7.5</h1>
-
-    <!-- Imagen de la carta -->
-    <img id="cartaImg" src="https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/back.jpg" alt="Carta boca abajo">
-
-    <!-- Puntuación actual -->
-    <div id="puntuacionDiv">Puntuación: 0</div>
-
-    <!-- Botones para pedir carta y plantarse -->
-    <div>
+    <div id="contenedor">
+      
+      <div id="cartaDiv">
+        <img id="cartaImg" src="https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/back.jpg" alt="Carta boca abajo">
+      </div>
+  
+      
+      <div id="puntuacionDiv">Puntuación: 0</div>
+  
+      
+      <div id="mensajeDiv"></div>
+  
+      
+      <div id="botones">
         <button id="pedirCartaBtn">Pedir Carta</button>
         <button id="plantarseBtn">Plantarse</button>
+        <button id="nuevaPartidaBtn">Nueva Partida</button>
+      </div>
     </div>
-
-    <!-- Botón para iniciar una nueva partida (oculto al principio) -->
-    <button id="nuevaPartidaBtn">Nueva Partida</button>
-
-    <!-- Mensaje para mostrar el estado del juego -->
-    <div id="mensajeDiv"></div>
-
-    <script type="module" src="/src/main.ts"></script>
-    
   
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
